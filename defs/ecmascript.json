@@ -21,6 +21,11 @@
         "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then",
         "!type": "fn(onFulfilled: fn(value: ?), onRejected: fn(reason: ?)) -> !custom:Promise_then",
         "!effects": ["call !0 !this.:t"]
+      },
+      "finally": {
+        "!doc": "The finally() method returns a Promise. When the promise is settled, whether fulfilled or rejected, the specified callback function is executed. ",
+        "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally",
+        "!type": "fn(onFinally: fn()) -> !custom:Promise_then"
       }
     },
     "Promise_reject": {
@@ -48,6 +53,24 @@
       "!proto": "iter_prototype",
       "next": "fn(value?: ?) -> iter_result",
       "return": "fn(value?: ?) -> iter_result",
+      "throw": "fn(exception: +Error)"
+    },
+    "async_iter_prototype": {
+      ":Symbol.asyncIterator": "fn() -> !this"
+    },
+    "async_iter": {
+      "!proto": "async_iter_prototype",
+      "next": {
+        "!type": "fn() -> +Promise[:t=+iter_result[value=!this.:t]]",
+        "!doc": "Return the next item in the sequence.",
+        "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators"
+      },
+      "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators"
+    },
+    "async_generator_prototype": {
+      "!proto": "async_iter_prototype",
+      "next": "fn(value?: ?) -> +Promise[:t=iter_result]",
+      "return": "fn(value?: ?) -> +Promise[:t=iter_result]",
       "throw": "fn(exception: +Error)"
     },
     "Proxy_handler": {
@@ -245,14 +268,6 @@
           "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/@@iterator"
         }
       }
-    },
-    "propertyDescriptor": {
-      "enumerable": "bool",
-      "configurable": "bool",
-      "value": "?",
-      "writable": "bool",
-      "get": "fn() -> ?",
-      "set": "fn(value: ?)"
     }
   },
   "Infinity": {
@@ -339,7 +354,7 @@
     },
     "assign": {
       "!type": "fn(target: ?, source: ?, source?: ?) -> !0",
-      "!effects": ["copy !1 !0"],
+      "!effects": ["copy !1 !0", "copy !2 !0", "copy !3 !0"],
       "!doc": "The Object.assign() method is used to copy the values of all enumerable own properties from one or more source objects to a target object. It will return the target object.",
       "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign"
     },
@@ -619,9 +634,9 @@
         "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/@@iterator"
       },
       "includes": {
-        "!type": "fn(value: ?) -> bool",
-        "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes",
-        "!doc": "Determines whether an array includes a certain element, returning true or false as appropriate."
+        "!type": "fn(value: ?, fromIndex?: number) -> bool",
+        "!doc": "Determines whether an array includes a certain element, returning true or false as appropriate.",
+        "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes"
       }
     },
     "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array",
@@ -687,11 +702,33 @@
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String/slice",
         "!doc": "Extracts a section of a string and returns a new string."
       },
+      "padStart": {
+        "!type": "fn(targetLength: number, padString?: string) -> string",
+        "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart",
+        "!doc": "Pads the current string with another string (repeated, if needed) so that the resulting string reaches the given length."
+      },
+      "padEnd": {
+        "!type": "fn(targetLength: number, padString?: string) -> string",
+        "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd",
+        "!doc": "pads the current string with a given string (repeated, if needed) so that the resulting string reaches a given length."
+      },
       "trim": {
         "!type": "fn() -> string",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String/Trim",
         "!doc": "Removes whitespace from both ends of the string."
       },
+      "trimStart": {
+        "!type": "fn() -> string",
+        "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimStart",
+        "!doc": "Removes whitespace from the beginning of a string. "
+      },
+      "trimLeft": "String.prototype.trimStart",
+      "trimEnd": {
+        "!type": "fn() -> string",
+        "!url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimEnd",
+        "!doc": "Removes whitespace from the end of a string."
+      },
+      "trimRight": "String.prototype.trimEnd",
       "toUpperCase": {
         "!type": "fn() -> string",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String/toUpperCase",
@@ -909,12 +946,12 @@
       "multiline": {
         "!type": "bool",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/RegExp/multiline",
-        "!doc": "Reflects whether or not to search in strings across multiple lines.\n"
+        "!doc": "Reflects whether or not to search in strings across multiple lines."
       },
       "source": {
         "!type": "string",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/RegExp/source",
-        "!doc": "A read-only property that contains the text of the pattern, excluding the forward slashes.\n"
+        "!doc": "A read-only property that contains the text of the pattern, excluding the forward slashes."
       },
       "lastIndex": {
         "!type": "number",
@@ -981,7 +1018,7 @@
       "toLocaleDateString": {
         "!type": "fn() -> string",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/toLocaleDateString",
-        "!doc": "Converts a date to a string, returning the \"date\" portion using the operating system's locale's conventions.\n"
+        "!doc": "Converts a date to a string, returning the \"date\" portion using the operating system's locale's conventions."
       },
       "toLocaleTimeString": {
         "!type": "fn() -> string",
@@ -1011,7 +1048,7 @@
       "getUTCMonth": {
         "!type": "fn() -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/getUTCMonth",
-        "!doc": "Returns the month of the specified date according to universal time.\n"
+        "!doc": "Returns the month of the specified date according to universal time."
       },
       "getDate": {
         "!type": "fn() -> number",
@@ -1021,7 +1058,7 @@
       "getUTCDate": {
         "!type": "fn() -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/getUTCDate",
-        "!doc": "Returns the day (date) of the month in the specified date according to universal time.\n"
+        "!doc": "Returns the day (date) of the month in the specified date according to universal time."
       },
       "getDay": {
         "!type": "fn() -> number",
@@ -1031,7 +1068,7 @@
       "getUTCDay": {
         "!type": "fn() -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/getUTCDay",
-        "!doc": "Returns the day of the week in the specified date according to universal time.\n"
+        "!doc": "Returns the day of the week in the specified date according to universal time."
       },
       "getHours": {
         "!type": "fn() -> number",
@@ -1041,7 +1078,7 @@
       "getUTCHours": {
         "!type": "fn() -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/getUTCHours",
-        "!doc": "Returns the hours in the specified date according to universal time.\n"
+        "!doc": "Returns the hours in the specified date according to universal time."
       },
       "getMinutes": {
         "!type": "fn() -> number",
@@ -1061,7 +1098,7 @@
       "getUTCSeconds": {
         "!type": "fn() -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/getUTCSeconds",
-        "!doc": "Returns the seconds in the specified date according to universal time.\n"
+        "!doc": "Returns the seconds in the specified date according to universal time."
       },
       "getMilliseconds": {
         "!type": "fn() -> number",
@@ -1071,7 +1108,7 @@
       "getUTCMilliseconds": {
         "!type": "fn() -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/getUTCMilliseconds",
-        "!doc": "Returns the milliseconds in the specified date according to universal time.\n"
+        "!doc": "Returns the milliseconds in the specified date according to universal time."
       },
       "getTimezoneOffset": {
         "!type": "fn() -> number",
@@ -1081,17 +1118,17 @@
       "setTime": {
         "!type": "fn(date: +Date) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setTime",
-        "!doc": "Sets the Date object to the time represented by a number of milliseconds since January 1, 1970, 00:00:00 UTC.\n"
+        "!doc": "Sets the Date object to the time represented by a number of milliseconds since January 1, 1970, 00:00:00 UTC."
       },
       "setFullYear": {
         "!type": "fn(year: number) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setFullYear",
-        "!doc": "Sets the full year for a specified date according to local time.\n"
+        "!doc": "Sets the full year for a specified date according to local time."
       },
       "setUTCFullYear": {
         "!type": "fn(year: number) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setUTCFullYear",
-        "!doc": "Sets the full year for a specified date according to universal time.\n"
+        "!doc": "Sets the full year for a specified date according to universal time."
       },
       "setMonth": {
         "!type": "fn(month: number) -> number",
@@ -1101,7 +1138,7 @@
       "setUTCMonth": {
         "!type": "fn(month: number) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setUTCMonth",
-        "!doc": "Sets the month for a specified date according to universal time.\n"
+        "!doc": "Sets the month for a specified date according to universal time."
       },
       "setDate": {
         "!type": "fn(day: number) -> number",
@@ -1111,7 +1148,7 @@
       "setUTCDate": {
         "!type": "fn(day: number) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setUTCDate",
-        "!doc": "Sets the day of the month for a specified date according to universal time.\n"
+        "!doc": "Sets the day of the month for a specified date according to universal time."
       },
       "setHours": {
         "!type": "fn(hour: number) -> number",
@@ -1121,7 +1158,7 @@
       "setUTCHours": {
         "!type": "fn(hour: number) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setUTCHours",
-        "!doc": "Sets the hour for a specified date according to universal time.\n"
+        "!doc": "Sets the hour for a specified date according to universal time."
       },
       "setMinutes": {
         "!type": "fn(min: number) -> number",
@@ -1131,7 +1168,7 @@
       "setUTCMinutes": {
         "!type": "fn(min: number) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setUTCMinutes",
-        "!doc": "Sets the minutes for a specified date according to universal time.\n"
+        "!doc": "Sets the minutes for a specified date according to universal time."
       },
       "setSeconds": {
         "!type": "fn(sec: number) -> number",
@@ -1141,17 +1178,17 @@
       "setUTCSeconds": {
         "!type": "fn(sec: number) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setUTCSeconds",
-        "!doc": "Sets the seconds for a specified date according to universal time.\n"
+        "!doc": "Sets the seconds for a specified date according to universal time."
       },
       "setMilliseconds": {
         "!type": "fn(ms: number) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setMilliseconds",
-        "!doc": "Sets the milliseconds for a specified date according to local time.\n"
+        "!doc": "Sets the milliseconds for a specified date according to local time."
       },
       "setUTCMilliseconds": {
         "!type": "fn(ms: number) -> number",
         "!url": "https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/setUTCMilliseconds",
-        "!doc": "Sets the milliseconds for a specified date according to universal time.\n"
+        "!doc": "Sets the milliseconds for a specified date according to universal time."
       },
       "toJSON": {
         "!type": "fn() -> string",
@@ -1868,7 +1905,7 @@
     "hasInstance": ":Symbol.hasInstance",
     "isConcatSpreadable": ":Symbol.isConcatSpreadable",
     "iterator": ":Symbol.iterator",
-    "keyFor": ":Symbol.keyFor",
+    "asyncIterator": ":Symbol.asyncIterator",
     "match": ":Symbol.match",
     "replace": ":Symbol.replace",
     "search": ":Symbol.search",
